@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import SignInAndSignUpPage from './page/sign-in-and-sign-up/sign-in-and-sign-up.component';
+import { createStructuredSelector } from 'reselect';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+
 import './App.css';
 import HomePage from './page/homepage/home.component';
 import ShopPage from './page/shop/shop.component';
+import SignInAndSignUpPage from './page/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import Header from './components/header/header.component';
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 import { setCurrentUser } from './redux/user/user.actions';
+import { selectCurrentUser } from './redux/user/user.selector';
 
 class App extends Component {
 
@@ -26,7 +29,8 @@ class App extends Component {
             id: snapShot.id,
             ...snapShot.data()
           });
-        });        
+          setCurrentUser(userAuth);
+        });
       }
       setCurrentUser(userAuth);
     });
@@ -53,8 +57,8 @@ class App extends Component {
 }
 
 
-const mapStateToProps = ({ user }) => ({
-  currentUser: user.currentUser
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser
 })
 
 const mapDispatchToProps = dispatch => ({
